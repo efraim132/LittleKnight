@@ -34,9 +34,18 @@ namespace LittleKnight
         Knight mainKnight = new Knight();
         Building TestBuild;
 
-        Enemy Viking = new Enemy();
+        static int screengroundLevel = 411;
 
-        AI VikingAI;
+        public static int cameraShiftRate = 2;
+        /// <summary>
+        /// Right Boundry where screen will shift
+        /// </summary>
+        static int leftBound = 100;
+        /// <summary>
+        /// Right Boundry where screen will shift
+        /// </summary>
+        static int rightBound = 250;
+        
 
         enum GameState{
             Menu,
@@ -73,7 +82,6 @@ namespace LittleKnight
             //    frame = 0;
             mainKnight.setKnightJumpHeight(0);
             //   SourceRekt = new Rectangle(0, 0, 60, 60);
-            VikingAI = new AI(10, Viking);
             // Viking AI difficlty is 10 for testing
             CurrentGameState = GameState.InGame;
         }
@@ -118,11 +126,16 @@ namespace LittleKnight
         /// </summary>
         void interperateControls()
         {
-            if(Keyboard.GetState().IsKeyDown(Keys.D))
+            //If Knight is attacking, you cannot move
+            if (mainKnight.CurrentState == Knight.State.attacking)
+            {
+                return;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
-                    if (mainKnight.MapPos.Y == 411)
+                    if (mainKnight.MapPos.Y == screengroundLevel)
                         mainKnight.setVerticalSpeed(-10);
                     return;
                 }
@@ -135,7 +148,7 @@ namespace LittleKnight
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
-                    if (mainKnight.MapPos.Y == 411)
+                    if (mainKnight.MapPos.Y == screengroundLevel)
                         mainKnight.setVerticalSpeed(-10);
                
                     return;
@@ -147,7 +160,7 @@ namespace LittleKnight
             }
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                if (mainKnight.MapPos.Y == 411)
+                if (mainKnight.MapPos.Y == screengroundLevel)
                 mainKnight.setVerticalSpeed(-10);
 
                 return;
@@ -158,11 +171,7 @@ namespace LittleKnight
    
                 return;
             }
-            if(mainKnight.CurrentState == Knight.State.attacking)
-            {
-
-                return;
-            }
+            
             mainKnight.IdleTime++;
             if(mainKnight.CurrentState != Knight.State.idle)
             mainKnight.CurrentState = Knight.State.standing;
@@ -182,17 +191,17 @@ namespace LittleKnight
             {
                     if (mainKnight.getSoldierTurn())
                     {
-                        mainKnight.MapPos.X += 2;
-                        if(CalculatePosition(mainKnight.MapPos).X > 650)
+                        mainKnight.MapPos.X += cameraShiftRate;
+                        if(CalculatePosition(mainKnight.MapPos).X > rightBound)
                         {
                            if(CameraShift<800)
-                           CameraShift += 2;
+                           CameraShift += cameraShiftRate;
                         }
                     }
                     else
                     {
                         mainKnight.MapPos.X -= 2;
-                    if (CalculatePosition(mainKnight.MapPos).X < 100)
+                    if (CalculatePosition(mainKnight.MapPos).X < leftBound)
                     {
                         if(CameraShift!=0)
                         CameraShift -= 2;
@@ -202,7 +211,7 @@ namespace LittleKnight
             }
            //Updates the position vertically of the player
             mainKnight.MapPos.Y += mainKnight.VerticalSpeed;
-            if (mainKnight.MapPos.Y < 411)
+            if (mainKnight.MapPos.Y < screengroundLevel)
             {
                 if (mainKnight.VerticalSpeed <= 5)
                 {
@@ -213,7 +222,7 @@ namespace LittleKnight
             else
             {
                 mainKnight.VerticalSpeed = 0;
-                mainKnight.MapPos.Y = 411;
+                mainKnight.MapPos.Y = screengroundLevel;
             }
             //1000 is the amount of frames while there is no action to take to cause the knight to start idling
             //Idle handling
@@ -281,7 +290,7 @@ namespace LittleKnight
         void DrawKnight()
         {
             
-            if (mainKnight.MapPos.Y<411)
+            if (mainKnight.MapPos.Y< screengroundLevel)
             {
                 if (mainKnight.SoldierTurn)
                 {

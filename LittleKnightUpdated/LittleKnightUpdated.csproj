@@ -41,10 +41,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AI.cs" />
     <Compile Include="Animation.cs" />
     <Compile Include="Building.cs" />
-    <Compile Include="Enemy.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Knight.cs" />
     <Compile Include="Position.cs" />
